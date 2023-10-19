@@ -14,7 +14,6 @@ describe('monolith', () => {
     cy.get('#residentialAddress').click()
     cy.contains('Full Address').click()
     cy.get('#submit-selected').click() 
-    // cy.get('#entries-counter').clear().type(100)
     cy.get('#csv-json-btn').click() 
     cy.get('#save-template-btn').click()
     cy.get('#input-modal-input').type('test1')
@@ -22,24 +21,37 @@ describe('monolith', () => {
     cy.get('#modal-ok-button').click()
   });
   it('Can use a template to generate data', () => {
+    let HSLBTDGfileName = 'notAssigned';
     cy.get('a.nav-links[href="/data"]').click()
     cy.get('#templates-selector').select(5)
-    // cy.contains('test1').click({force: true})
     cy.get('#submit-template').click()
     cy.get('#csv-json-btn').click() 
     cy.get('#generate-values').click()
-    // cy.wait(5000)
+    cy.log(HSLBTDGfileName);
+    cy.get('#file-name-input').invoke('val').then((value) => {
+      cy.log(value);
+  });
+    cy.get('#file-name-input').invoke('val').then((dataName) =>  {
+      expect(dataName).to.not.be.empty;
+      HSLBTDGfileName = dataName; 
+    });
+    cy.log(HSLBTDGfileName);
     cy.get('#upload-button').click()
-    // cy.wait(5000)
     cy.get('#modal-ok-button').click()
+    cy.get('a.nav-links[href="/"]').click()
+    cy.get('a.nav-links[href="/data"]').click()
+    cy.get('#templates-selector').select('test1').should('contain', 'test1')
     cy.get('a.nav-links[href="/"]').click()
     cy.get('a.nav-links[href="/data"]').click()
     cy.get('#templates-selector').select(5)
     cy.get('#delete-template').click()
     cy.get('#confirm-modal-confirm').click()
     cy.get('#modal-ok-button').click()
+    cy.log(HSLBTDGfileName);
   })
   // after(() => {
   //   cy.get('#logout-link').click()
   // });
 });
+
+// cy.get('#entries-counter').clear().type(100)
