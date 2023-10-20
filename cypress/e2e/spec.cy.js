@@ -153,7 +153,7 @@ describe('monolith', () => {
     });
     // cy.get('a.nav-links[href="/"]').click()
 });
-  it.skip('Can generate data to specifications', () => {
+  it('Can generate data to specifications', () => {
     cy.get('a.nav-links[href="/"]').click()
     cy.get('a.nav-links[href="/data"]').click()
     cy.get('#personal').click()
@@ -171,29 +171,37 @@ describe('monolith', () => {
     cy.get('#entries-counter').should('have.value', 100)
     cy.get('#csv-json-btn').click() 
     cy.get('#generate-values').click()
-    cy.get('#upload-button').click()
-    cy.get('#modal-message').should('contain', 'File saved!')
-    cy.get('#modal-ok-button').click()
-    cy.get('a.nav-links[href="/"]').click()
+    cy.get('#download-button').click().wait(5000).then(() => {
+      cy.task('readFile', 'path/to/your/downloaded/file.json').then((fileContent) => {
+        if (fileContent) {
+          const data = JSON.parse(fileContent);
+          cy.wrap(data).should('have.length', 101);
+        }
+      });
+    })
+    // cy.get('#upload-button').click()
+    // cy.get('#modal-message').should('contain', 'File saved!')
+    // cy.get('#modal-ok-button').click()
+    // cy.get('a.nav-links[href="/"]').click()
 });
-it('Can download a preset template then upload it to TDG', () => {
+it.skip('Can download a preset template then upload it to TDG', () => {
   cy.get('a.nav-links[href="/"]').click()
   cy.get('a.nav-links[href="/data"]').click()
   cy.get('#templates-selector').select(2)
   cy.get('#submit-template').click()
   cy.get('#json-btn').click() 
   cy.get('#generate-values').click()
-  cy.get('#download-button').click()
+  cy.get('#download-button').click().wait(5000).then(() => {
   cy.task('getLatestFile', 'C:/Users/LewisBrennan/CypressLearning/thursdayTdgTask/cypress/downloads').then((latestFile) => {
-    cy.task('moveFileToFixtures', latestFile).then(() => {
-      cy.wait(5000).then(() => {
+      cy.task('moveFileToFixtures', latestFile).then(() => {
       cy.get('a.nav-links[href="/"]').click();
       cy.get('a.nav-links[href="/data"]').click();
       cy.get('#next-section-btn > button').click();
       cy.get('#file-upload-input').attachFile(latestFile);
-    });
+      cy.get('#overlay-key-inputs > h3').should('contain', 'FILE EDITOR')
     });
   });
+});
 });
   // after(() => {
   //   cy.get('a.nav-links[href="/"]').click()

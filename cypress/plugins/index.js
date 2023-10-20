@@ -21,7 +21,14 @@ module.exports = (on, config) => {
       fs.renameSync(sourcePath, destPath);
       
       return null;
-    }
+    },
+
+    readFile(filePath) {
+        if (fs.existsSync(filePath)) {
+          return fs.readFileSync(filePath, 'utf8');
+        }
+        return null;
+      }
   });
 };
 
