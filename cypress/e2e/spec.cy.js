@@ -1,105 +1,4 @@
 import 'cypress-file-upload';
-/* 
-describe('monolith', () => {
-  beforeEach(() => {
-    cy.visit('https://develop.d3nylssqqiptjw.amplifyapp.com/');
-    // cy.get('[placeholder="Email..."]').click().type('team3@test.com');
-    // cy.get('[placeholder="Password..."]').click().type('123456');
-    // cy.get('[id="login-button"]').click();
-  });
-  it('Generate a template', () => {
-    cy.get('a.nav-links[href="/data"]').click()
-    cy.get('#personal').click()
-    cy.contains('First name').click()  
-    cy.contains('Last Name').click()
-    cy.contains('Email Address').click()
-    cy.get('#residentialAddress').click()
-    cy.contains('Full Address').click()
-    cy.get('#submit-selected').click() 
-    cy.get('#csv-json-btn').click() 
-    cy.get('#save-template-btn').click()
-    cy.get('#input-modal-input').type('test1')
-    cy.get('#modal-save-button').click()
-    cy.get('#modal-ok-button').click()
-  });
-  // it('Can use a template to generate data', () => {
-  //   let interceptedFileName = 'notAssigned';
-  //   cy.get('a.nav-links[href="/data"]').click()
-  //   cy.get('#templates-selector').select(5)
-  //   cy.get('#submit-template').click()
-  //   cy.get('#csv-json-btn').click() 
-  //   cy.get('#generate-values').click()
-  //   cy.log(interceptedFileName);
-  //   cy.get('#file-name-input').invoke('val').then((dataName) => {
-  //     cy.log(dataName);
-  // });
-  //   cy.get('#file-name-input').invoke('val').then((dataName) =>  {
-  //     interceptedFileName = dataName;
-  //     cy.log(interceptedFileName); 
-  //   });
-  //   cy.log(interceptedFileName);
-  //   cy.get('#upload-button').click()
-  //   cy.get('#modal-ok-button').click()
-  //   cy.get('a.nav-links[href="/"]').click()
-  //   cy.get('a.nav-links[href="/data"]').click()
-  //   cy.get('#templates-selector').select('test1').should('contain', 'test1')
-  //   cy.get('a.nav-links[href="/"]').click()
-  //   cy.get('a.nav-links[href="/data"]').click()
-  //   cy.get('#templates-selector').select(5)
-  //   cy.get('#delete-template').click()
-  //   cy.get('#confirm-modal-confirm').click()
-  //   cy.get('#modal-ok-button').click()
-  // })
-  it('Can use a template to generate data', () => {
-    cy.get('a.nav-links[href="/data"]').click()
-    .get('#templates-selector').select(5)
-    .get('#submit-template').click()
-    .get('#csv-json-btn').click() 
-    .get('#generate-values').click()
-    .get('#file-name-input').invoke('val').then((dataName) => {
-      cy.log(dataName)
-      .get('#file-name-input')
-      .invoke('val').then((valueFromInput) => {
-        const interceptedFileName = valueFromInput; 
-        cy.log(interceptedFileName)
-        .get('#upload-button').click()
-        .get('#modal-ok-button').click()
-        .get('a.nav-links[href="/"]').click()
-        .get('a.nav-links[href="/data"]').click()
-        .get('#templates-selector').select('test1').should('contain', 'test1')
-        .get('a.nav-links[href="/"]').click()
-        .get('a.nav-links[href="/history"]').click()
-        // two new lines
-        .get('#root > div.page.light > div > div > table')
-        .contains(interceptedFileName).should('exist')
-        .get('a.nav-links[href="/"]').click()
-        .get('a.nav-links[href="/data"]').click()
-        .get('#templates-selector').select(5)
-        .get('#delete-template').click()
-        .get('#confirm-modal-confirm').click()
-        .get('#modal-ok-button').click();
-        cy.log(interceptedFileName);
-      });
-    });
-});
-
-  it('Can use a template to generate data to specifications')
-    cy.get('a.nav-links[href="/"]').click()
-    cy.get('a.nav-links[href="/data"]').click()
-    cy.get('#personal').click()
-    cy.contains('First name').click()  
-    cy.contains('Last Name').click()
-    cy.contains('Email Address').click()
-    cy.get('#personal).should('contain', 'First name').and('contain', 'Last Name').and('contain', 'Email Address');
-
-  // after(() => {
-  //   cy.get('#logout-link').click()
-  // });
-});
-
-// cy.get('#entries-counter').clear().type(100)
-
-*/
 
 describe('monolith', () => {
   beforeEach(() => {
@@ -117,20 +16,27 @@ describe('monolith', () => {
     cy.get('#residentialAddress').click()
     cy.contains('Full Address').click()
     cy.get('#submit-selected').click() 
-    cy.get('#csv-json-btn').click() 
+    cy.get('#json-btn').click() 
     cy.get('#save-template-btn').click()
     cy.get('#input-modal-input').type('test1')
     cy.get('#modal-save-button').click()
     cy.get('#modal-message').should('contain', 'Saved template: test1')
+    cy.get('#modal-ok-button').click().then(() => {
+    cy.get('a.nav-links[href="/"]').click()
+    cy.get('a.nav-links[href="/data"]').click()
+    cy.get('#templates-selector').select(5)
+    cy.get('#delete-template').click()
+    cy.get('#confirm-modal-confirm').click()
     cy.get('#modal-ok-button').click()
+    })
   });
   it('Can use a template to generate data', () => {
     cy.get('a.nav-links[href="/data"]').click()
-    .get('#templates-selector').select(5)
-    .get('#submit-template').click()
-    .get('#csv-json-btn').click() 
-    .get('#generate-values').click()
-    .get('#file-name-input').invoke('val').then((dataName) => {
+    cy.get('#templates-selector').select(0)
+    cy.get('#submit-template').click()
+    cy.get('#json-btn').click() 
+    cy.get('#generate-values').click()
+    cy.get('#file-name-input').invoke('val').then((dataName) => {
       cy.log(dataName)
       .get('#file-name-input') 
       .invoke('val').then((valueFromInput) => {
@@ -140,18 +46,13 @@ describe('monolith', () => {
         .get('#modal-ok-button').click()
         .get('a.nav-links[href="/"]').click()
         .get('a.nav-links[href="/data"]').click()
-        .get('#templates-selector').select('test1').should('contain', 'test1')
-        // .get('#confirm-modal-confirm').click()
-        // .get('#modal-ok-button').click()
+        .get('#templates-selector').select(0)
         .get('a.nav-links[href="/"]').click()
         .get('a.nav-links[href="/history"]').click()
-        // two new lines
         .get('#root > div.page.light > div > div > table')
         .contains(interceptedFileName).should('exist')
-        // cy.log(interceptedFileName);
       });
     });
-    // cy.get('a.nav-links[href="/"]').click()
 });
   it('Can generate data to specifications', () => {
     cy.get('a.nav-links[href="/"]').click()
@@ -171,15 +72,6 @@ describe('monolith', () => {
     cy.get('#entries-counter').should('have.value', 100)
     cy.get('#json-btn').click() 
     cy.get('#generate-values').click()
-    // OLD
-    // cy.get('#download-button').click().wait(5000).then(() => {
-    //   cy.task('readFile', 'C:/Users/LewisBrennan/CypressLearning/thursdayTdgTask/cypress/downloads').then((fileContent) => {
-    //     if (fileContent) {
-    //       const data = JSON.parse(fileContent);
-    //       cy.wrap(data).should('have.length', 101);
-    //     }
-    //   });
-    // })
     cy.get('#download-button').click().wait(5000).then(() => {
       cy.task('getLatestFile', 'C:/Users/LewisBrennan/CypressLearning/thursdayTdgTask/cypress/downloads').then((latestFile) => {
         const filePath = `C:/Users/LewisBrennan/CypressLearning/thursdayTdgTask/cypress/downloads/${latestFile}`;
@@ -191,10 +83,6 @@ describe('monolith', () => {
         });
       });
     })    
-    // cy.get('#upload-button').click()
-    // cy.get('#modal-message').should('contain', 'File saved!')
-    // cy.get('#modal-ok-button').click()
-    // cy.get('a.nav-links[href="/"]').click()
 });
 it('Can download a preset template then upload it to TDG', () => {
   cy.get('a.nav-links[href="/"]').click()
@@ -215,13 +103,4 @@ it('Can download a preset template then upload it to TDG', () => {
   });
 });
 });
-  after(() => {
-    cy.get('a.nav-links[href="/"]').click()
-    cy.get('a.nav-links[href="/data"]').click()
-    cy.get('#templates-selector').select(5)
-    cy.get('#delete-template').click()
-    cy.get('#confirm-modal-confirm').click()
-    cy.get('#modal-ok-button').click()
-  //   cy.get('#logout-link').click()
-  });
 });

@@ -8,8 +8,7 @@ module.exports = (on, config) => {
       const files = fs.readdirSync(folderPath);
 
       files.sort((a, b) => {
-        return fs.statSync(path.join(folderPath, b)).mtime.getTime() -
-               fs.statSync(path.join(folderPath, a)).mtime.getTime();
+        return fs.statSync(path.join(folderPath, b)).mtime.getTime() - fs.statSync(path.join(folderPath, a)).mtime.getTime();
       });
 
       return files.length > 0 ? files[0] : null;
@@ -34,11 +33,11 @@ module.exports = (on, config) => {
       readZippedJSON(filePath) {
         if (fs.existsSync(filePath)) {
           const zip = new ADMZip(filePath);
-          const zipEntries = zip.getEntries(); // Returns an array of ZipEntry records
+          const zipEntries = zip.getEntries(); 
     
           for (const zipEntry of zipEntries) {
-            if (zipEntry.entryName.endsWith('.json')) { // You're specifically looking for a .json file inside the zip
-              return zipEntry.getData().toString('utf8'); // Decompresses and returns the content of the JSON file
+            if (zipEntry.entryName.endsWith('.json')) { 
+              return zipEntry.getData().toString('utf8'); 
             }
           }
         }
