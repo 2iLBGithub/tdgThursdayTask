@@ -23,13 +23,6 @@ module.exports = (on, config) => {
       return null;
     },
 
-    readFile(filePath) {
-        if (fs.existsSync(filePath)) {
-          return fs.readFileSync(filePath, 'utf8');
-        }
-        return null;
-      },
-
       readZippedJSON(filePath) {
         if (fs.existsSync(filePath)) {
           const zip = new ADMZip(filePath);
@@ -42,7 +35,16 @@ module.exports = (on, config) => {
           }
         }
         return null;
-      }
+      },
+
+        deleteFile(filePath) {
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            return true;
+          } else {
+            throw new Error(`The file ${filePath} does not exist.`);
+          }
+        }
     });
 };
 
