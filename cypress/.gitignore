@@ -1,0 +1,6 @@
+/cypress/downloads/*
+
+/cypress/fixtures/*
+
+/cypress/e2e/experimentalSpec.cy.js
+

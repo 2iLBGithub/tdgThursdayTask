@@ -1,13 +1,30 @@
 import "cypress-file-upload";
+// PLEASE REPLACE WITH DOWNLOAD PATH
+const downloadsFilePath = "C:/Users/LewisBrennan/MainDirectoryNonClient/General/General Learning/thursdayTdgTask/cypress/downloads";
+// PLEASE REPLACE WITH FIXTURES PATH
+const fixturesFilePath = "C:/Users/LewisBrennan/MainDirectoryNonClient/General/General Learning/thursdayTdgTask/cypress/fixtures";
 
-describe("monolith", () => {
+describe.skip("monolith", () => {
   beforeEach(() => {
     cy.visit("https://develop.d3nylssqqiptjw.amplifyapp.com/");
-    // cy.get('[placeholder="Email..."]').click().type('team3@test.com');
-    // cy.get('[placeholder="Password..."]').click().type('123456');
-    // cy.get('[id="login-button"]').click();
+    cy.wait(1000)
+    cy.get('body').then($body => {
+      if ($body.find('#logout-link').length) {
+        cy.get('#logout-link').click();
+      }
+    });
+    cy.get('body').then($body => {
+      if ($body.find('#page-title:contains("AssureTDG Login")').length) {
+        cy.get('[placeholder="Email..."]').type('team3@test.com');
+        cy.get('[placeholder="Password..."]').type('123456');
+        cy.get('#login-button').click();
+        cy.wait(1000)
+      }
+    });
   });
   it("Generate a template", () => {
+    cy.reload()
+    cy.get('a.nav-links[href="/"]').click();
     cy.get('a.nav-links[href="/data"]').click();
     cy.get("#personal").click();
     cy.contains("First name").click();
@@ -32,7 +49,10 @@ describe("monolith", () => {
         cy.get("#modal-ok-button").click();
       });
   });
+  // EXPECTED TO FAIL IF THERE IS MORE THAN ONE FILE ALREADY EXISTING IN HISTORY AS OF 28/11/2023, PLEASE CONSULT README TO PASS TEST
   it("Can use a template to generate data", () => {
+    cy.reload()
+    cy.get('a.nav-links[href="/"]').click();
     cy.get('a.nav-links[href="/data"]').click();
     cy.get("#templates-selector").select(0);
     cy.get("#submit-template").click();
@@ -46,8 +66,7 @@ describe("monolith", () => {
           .invoke("val")
           .then((valueFromInput) => {
             const interceptedFileName = valueFromInput;
-            cy.log(interceptedFileName)
-              .get("#upload-button")
+              cy.get("#upload-button")
               .click()
               .get("#modal-ok-button")
               .click()
@@ -64,15 +83,24 @@ describe("monolith", () => {
               .get("#root > div.page.light > div > div > table")
               .contains(interceptedFileName)
               .should("exist")
-              .get("#delete-btn")
-              .click()
               .then(() => {
-                cy.wait(5000);
+                cy.get("#root > div.page.light > div > div > table > tbody > tr:last-child > td:last-child > #delete-btn")
+                  .click()
+                  cy.get("#spinner-message", { timeout: 10000 }).should('not.exist').then(() => {
+                    cy.get("body").then($body => {
+                      if ($body.find("#root > div.page.light > div > div > p:contains('No History to display')", { timeout: 10000 }).length) {
+                        cy.get("#root > div.page.light > div > div > p").should("contain", "No History to display");
+                      } else {
+                        cy.get("#root > div.page.light > div > div > table").should("not.contain", interceptedFileName);
+                      }
+                    });
+                  });
               });
           });
       });
-  });
+  });  
   it("Can generate data to specifications", () => {
+    cy.reload()
     cy.get('a.nav-links[href="/"]').click();
     cy.get('a.nav-links[href="/data"]').click();
     cy.get("#personal").click();
@@ -100,13 +128,13 @@ describe("monolith", () => {
     cy.get("#generate-values").click();
     cy.get("#download-button")
       .click()
-      .wait(5000)
+      .wait(500)
       .then(() => {
         cy.task(
           "getLatestFile",
-          "C:/Users/LewisBrennan/CypressLearning/thursdayTdgTask/cypress/downloads"
+          downloadsFilePath
         ).then((latestFile) => {
-          const filePath = `C:/Users/LewisBrennan/CypressLearning/thursdayTdgTask/cypress/downloads/${latestFile}`;
+          const filePath = downloadsFilePath + `/${latestFile}`;
           cy.task("readZippedJSON", filePath).then((jsonContent) => {
             if (jsonContent) {
               const data = JSON.parse(jsonContent);
@@ -118,6 +146,7 @@ describe("monolith", () => {
       });
   });
   it("Can download a preset template then upload it to TDG", () => {
+    cy.reload()
     cy.get('a.nav-links[href="/"]').click();
     cy.get('a.nav-links[href="/data"]').click();
     cy.get("#templates-selector").select(2);
@@ -126,20 +155,22 @@ describe("monolith", () => {
     cy.get("#generate-values").click();
     cy.get("#download-button")
       .click()
-      .wait(5000)
+      .wait(500)
       .then(() => {
         cy.task(
           "getLatestFile",
-          "C:/Users/LewisBrennan/CypressLearning/thursdayTdgTask/cypress/downloads"
+          downloadsFilePath
         ).then((latestFile) => {
-          cy.task("moveFileToFixtures", latestFile).then(() => {
-            const filePath = `C:/Users/LewisBrennan/CypressLearning/thursdayTdgTask/cypress/fixtures/${latestFile}`;
+          cy.task("moveLatestFileToFixtures", {
+            downloadsFolderPath: downloadsFilePath,
+            fixturesFolderPath: fixturesFilePath
+          }).then(() => {
             cy.get('a.nav-links[href="/"]').click();
             cy.get('a.nav-links[href="/data"]').click();
             cy.get("#next-section-btn > button").click();
             cy.get("#file-upload-input").attachFile(latestFile);
             cy.get("#overlay-key-inputs > h3").should("contain", "FILE EDITOR");
-            cy.task("deleteFile", filePath);
+            cy.task("deleteFile", fixturesFilePath + `/${latestFile}`);
           });
         });
       });

@@ -14,14 +14,17 @@ module.exports = (on, config) => {
       return files.length > 0 ? files[0] : null;
     },
 
-    moveFileToFixtures(fileName) {
-      const sourcePath = path.join('C:/Users/LewisBrennan/CypressLearning/thursdayTdgTask/cypress/downloads', fileName);
-      const destPath = path.join('cypress/fixtures', fileName);
-      
-      fs.renameSync(sourcePath, destPath);
-      
-      return null;
+    moveLatestFileToFixtures({downloadsFolderPath, fixturesFolderPath}) {
+      const files = fs.readdirSync(downloadsFolderPath).sort((a, b) => {
+        return fs.statSync(path.join(downloadsFolderPath, b)).mtime - fs.statSync(path.join(downloadsFolderPath, a)).mtime;
+      });
+      const latestFile = files[0];
+      const oldPath = path.join(downloadsFolderPath, latestFile);
+      const newPath = path.join(fixturesFolderPath, latestFile);
+      fs.renameSync(oldPath, newPath);
+      return newPath; 
     },
+    
 
       readZippedJSON(filePath) {
         if (fs.existsSync(filePath)) {
@@ -38,12 +41,8 @@ module.exports = (on, config) => {
       },
 
         deleteFile(filePath) {
-          if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
-            return true;
-          } else {
-            throw new Error(`The file ${filePath} does not exist.`);
-          }
+            return true;  
         }
     });
 };
