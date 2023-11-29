@@ -1,8 +1,8 @@
 import "cypress-file-upload";
 // PLEASE REPLACE WITH DOWNLOAD PATH
-const downloadsFilePath = "C:/Users/LewisBrennan/MainDirectoryNonClient/General/General Learning/thursdayTdgTask/cypress/downloads";
+const downloadsFilePath = "C:/YOURPATHHERE/thursdayTdgTask/cypress/downloads";
 // PLEASE REPLACE WITH FIXTURES PATH
-const fixturesFilePath = "C:/Users/LewisBrennan/MainDirectoryNonClient/General/General Learning/thursdayTdgTask/cypress/fixtures";
+const fixturesFilePath = "C:/YOURPATHHERE/thursdayTdgTask/cypress/fixtures";
 
 describe.skip("monolith", () => {
   beforeEach(() => {
